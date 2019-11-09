@@ -1,0 +1,35 @@
+# depslib dependency file v1.0
+1572669159 source:d:\mis documentos\unla\8622 redes y comunicaciones\tp\cliente\main.cpp
+	<iostream>
+	"programa.h"
+
+1572728483 source:d:\mis documentos\unla\8622 redes y comunicaciones\tp\cliente\programa.cpp
+	<string>
+	<stdio.h>
+	<iostream>
+	<stdlib.h>
+	<WinSock2.h>
+	"programa.h"
+
+1572669905 d:\mis documentos\unla\8622 redes y comunicaciones\tp\cliente\programa.h
+
+1572641955 source:d:\mis documentos\unla\8622 redes y comunicaciones\tp\cliente\programa.h
+	<WinSock2.h>
+	<iostream>
+
+1573145505 source:c:\users\jose\desktop\redes\tp\cliente\main.cpp
+	<iostream>
+	"programa.h"
+
+1573311217 c:\users\jose\desktop\redes\tp\cliente\programa.h
+	<WinSock2.h>
+
+1573319029 source:c:\users\jose\desktop\redes\tp\cliente\programa.cpp
+	<string>
+	<stdio.h>
+	<iostream>
+	<fstream>
+	<stdlib.h>
+	<WinSock2.h>
+	"programa.h"
+
