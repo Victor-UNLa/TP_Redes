@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <stdlib.h>     /* atoi */
+#include <fstream>
 
 using namespace std;
 
@@ -9,22 +10,9 @@ using namespace std;
 #include <WinSock2.h>
 
 #include "programa.h"
+#define BUFFSIZE 1
 
-/*
-void sendMessage(char mensaje2[100]){
-    if(strcmp(mensaje2, "(F)")==0){
-        std::cout << "Se procederá a cerrar la aplicación\n" ;
-        //quit=true;
-        // Envía mensaje
-        send(conexion, "(F)", 6, 0);
-        closesocket(conexion);
-        WSACleanup();
-        sleepTime(90);
-    }else{
-        std::cout << "Se recibio el mensaje: " << mensaje2 << "\n";
-    }
-}
-*/
+
 int obtenerFuncion(char mensaje[100]){
 
     int funtion=0;
@@ -40,18 +28,92 @@ int obtenerFuncion(char mensaje[100]){
     return funtion;
 };
 
-void receiveMessage(char mensaje2[100]){
-    std::cout << "Se recibio el mensaje: " << mensaje2 << "\n";
+void receiveMessage(char mensaje[100]){
+
+    std::string newMensaje(mensaje);
+    newMensaje = newMensaje.substr(4);
+    std::cout << "Se recibio el mensaje: " << newMensaje << "\n";
+
 };
 
+
+
+void sendData(SOCKET socket, std::string cadena){
+
+    char cad2[100];
+    int n=0, b;
+    char mensaje[100];
+    char sendbuffer[100]; // envia de a 100 bits
+    std::string cad=cadena.substr(4);
+    strcpy(cad2, cad.c_str());
+    FILE *fp = fopen(cad2, "rb");
+    if(fp == NULL){
+        perror("File");
+        sendData(socket,cadena);
+    }else{
+        strcpy(mensaje, cadena.c_str());
+        send(socket, mensaje, sizeof(mensaje), 0);
+        std::cout << "Se empezara a mandar un archivo.\n";
+        int tam=0;
+        std::ifstream is; // usa lib <fstream> para manejo de archivo
+        is.open (cad2, std::ios::binary );
+        is.seekg (0, std::ios::end);
+        tam = is.tellg();
+        is.seekg (0, std::ios::beg);
+        send(socket, reinterpret_cast<char*>(&tam), sizeof tam , 0);
+        while( (b = fread(sendbuffer, 1, sizeof(sendbuffer), fp))>0 ){
+            send(socket, sendbuffer, b, 0);
+        }
+        std::cout << "Se envio el archivo.\n";
+        sleepTime(10);
+    }
+
+}
+
+void recvData(SOCKET socket, std::string mensaje){
+
+    char cad1[100];
+    std::string cad=mensaje.substr(0,3);
+    std::string nameFile=mensaje.substr(4);
+
+    strcpy(cad1, cad.c_str());
+
+    char nombreArchivo[200];
+    char buff[1025];
+    int b,tam=0,tam_ar;
+    strcpy(nombreArchivo, nameFile.c_str());
+    std::cout << "Se recibio comando de transferencia de archivo." << "\n";
+    FILE* fp = fopen(nombreArchivo, "wb");
+    if(fp != NULL){
+        std::cout << "El archivo se guardara dentro de: /" << nombreArchivo << "\n";
+        recv(socket, reinterpret_cast<char*>(&tam_ar), sizeof tam_ar, 0);
+        while(tam<tam_ar){
+            b = recv(socket, buff, 1024,0);
+            fwrite(buff, 1, b, fp);
+            tam+=b;
+        }
+        if(tam<tam_ar){
+            std::cout << "El archivo NO se recibio completamente" << "\n";
+        }
+        fclose(fp);
+        std::cout << "Archivo recibido." << "\n";
+    } else {
+        perror("File");
+    }
+
+}
+
 bool closer(SOCKET conexion){
+
     std::cout << "Se procederá a cerrar la aplicación\n" ;
     // Envía mensaje
-    send(conexion, "(F)", 6, 0);
+    send(conexion, "(F)", sizeof("(F)"), 0);
+    // Finalizo
     closesocket(conexion);
     WSACleanup();
     sleepTime(90);
     return true;
+
 }
 
 int iniciarPrograma(char name[]){
@@ -102,6 +164,9 @@ int iniciarPrograma(char name[]){
         return 1;
     }
 
+    std::cout << "solicitud de conexión aceptada" << "\n";
+    sleepTime(10);
+
 	std::cin.get();
 	int quit=false;
 
@@ -109,21 +174,17 @@ int iniciarPrograma(char name[]){
 	{
 		std::string cadena;
 	    char mensaje[100];
+
+
         cadena = pedirCadena(" Cliente: ");
 		strcpy(mensaje, cadena.c_str());
-		// Send, Write: Envía mensaje
-        send(conexion, mensaje, sizeof(mensaje), 0);
-
-		char mensaje2[100];
-		// Recv, Read: Recibe mensaje
-        recv(conexion, mensaje2, sizeof(mensaje2), 0);
-        int opct = obtenerFuncion(mensaje2);
+		int opct = obtenerFuncion(mensaje);
         switch (opct){
             case 1: // Función M (Mensaje):
-            receiveMessage(mensaje2);
+            send(conexion, mensaje, sizeof(mensaje), 0);
             break;
             case 2: // Función T (Transferencia de archivo):
-            std::cout << "Se recibio comando de transferencia de archivo\n";
+            sendData(conexion,mensaje);
             break;
             case 3: // Función F (Fin):
             quit = closer(conexion);
@@ -132,16 +193,31 @@ int iniciarPrograma(char name[]){
             break;
         }
 
+        if(!quit){
+            char mensaje2[100];
+            // Recv, Read: Recibe mensaje
+            recv(conexion, mensaje2, sizeof(mensaje2), 0);
+            opct = obtenerFuncion(mensaje2);
+            switch (opct){
+                case 1: // Función M (Mensaje):
+                receiveMessage(mensaje2);
+                break;
+                case 2: // Función T (Transferencia de archivo):
+                recvData(conexion,mensaje2);
+                break;
+                case 3: // Función F (Fin):
+                quit = closer(conexion);
+                break;
+                default:
+                break;
+            }
+        }
 
 	}
     // cleanup
-    closesocket(conexion);
     WSACleanup();
 
 };
-
-
-
 
 std::string pedirCadena(std::string text){
     std::string cadena;

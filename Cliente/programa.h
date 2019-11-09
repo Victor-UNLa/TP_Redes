@@ -1,6 +1,7 @@
 #ifndef PROGRAMA_H_INCLUDED
 #define PROGRAMA_H_INCLUDED
 
+
 std::string pedirCadena(std::string text);
 int pedirPuerto();
 int obtenerFuncion(char mensaje[100]);

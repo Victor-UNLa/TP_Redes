@@ -15,7 +15,7 @@
 					<Add option="-g" />
 				</Compiler>
 				<Linker>
-					<Add library="../../../../Program Files (x86)/CodeBlocks/MinGW/lib/libws2_32.a" />
+					<Add library="lib/libws2_32.a" />
 				</Linker>
 			</Target>
 			<Target title="Release">
@@ -37,11 +37,7 @@
 		</Compiler>
 		<Unit filename="main.cpp" />
 		<Unit filename="programa.cpp" />
-		<Unit filename="programa.h">
-			<Option compile="1" />
-			<Option link="1" />
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
+		<Unit filename="programa.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -12,3 +12,19 @@
 1572669195 source:c:\users\compaq\desktop\servidor\programa.cpp
 	"programa.h"
 
+1572861589 source:c:\users\compaq\documents\github\tp_redes\servidor\main.cpp
+	<string>
+	<iostream>
+	"programa.h"
+
+1573332539 c:\users\compaq\documents\github\tp_redes\servidor\programa.h
+
+1573334188 source:c:\users\compaq\documents\github\tp_redes\servidor\programa.cpp
+	<string>
+	<stdio.h>
+	<iostream>
+	<stdlib.h>
+	<fstream>
+	<WinSock2.h>
+	"programa.h"
+

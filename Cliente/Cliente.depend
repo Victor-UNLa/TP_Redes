@@ -17,3 +17,18 @@
 	<WinSock2.h>
 	<iostream>
 
+1573328733 source:c:\users\jose_\documents\github\tp_redes\cliente\main.cpp
+	<iostream>
+	"programa.h"
+
+1573328815 c:\users\jose_\documents\github\tp_redes\cliente\programa.h
+
+1573334161 source:c:\users\jose_\documents\github\tp_redes\cliente\programa.cpp
+	<string>
+	<stdio.h>
+	<iostream>
+	<stdlib.h>
+	<fstream>
+	<WinSock2.h>
+	"programa.h"
+
