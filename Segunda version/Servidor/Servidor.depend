@@ -1,0 +1,31 @@
+# depslib dependency file v1.0
+1572646352 source:c:\users\compaq\desktop\servidor\main.cpp
+	<string>
+	<iostream>
+	"programa.h"
+
+1572646352 c:\users\compaq\desktop\servidor\programa.h
+	<WinSock2.h>
+	<Windows.h>
+	<iostream>
+
+1572669195 source:c:\users\compaq\desktop\servidor\programa.cpp
+	"programa.h"
+
+1573146209 source:d:\proyectos\redes\tp\servidor\main.cpp
+	<string>
+	<iostream>
+	"programa.h"
+
+1573319549 d:\proyectos\redes\tp\servidor\programa.h
+	<WinSock2.h>
+	<Windows.h>
+	<iostream>
+
+1573318437 source:d:\proyectos\redes\tp\servidor\programa.cpp
+	<stdlib.h>
+	<stdio.h>
+	<iostream>
+	<fstream>
+	"programa.h"
+
