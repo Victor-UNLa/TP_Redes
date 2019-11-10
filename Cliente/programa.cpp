@@ -51,7 +51,7 @@ void sendData(SOCKET socket, std::string cadena){
         perror("File");
         std::cout << "Error no se encontro el archivo. Espere a que le envien un mensaje.\n";
         char msg[100]="error";
-        sendMessage(socket,msg);
+        send(socket, msg, sizeof(msg), 0);
     }else{
         strcpy(mensaje, cadena.c_str());
         send(socket, mensaje, sizeof(mensaje), 0);
