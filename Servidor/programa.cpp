@@ -52,7 +52,9 @@ void sendData(SOCKET socket, std::string cadena){
     FILE *fp = fopen(cad2, "rb");
     if(fp == NULL){
         perror("File");
-        sendData(socket,cadena);
+        std::cout << "Error no se encontro el archivo. Espere a que le envien un mensaje.\n";
+        char msg[100]="error";
+        sendMessage(socket,msg);
     }else{
         strcpy(mensaje, cadena.c_str());
         send(socket, mensaje, sizeof(mensaje), 0);
@@ -138,7 +140,7 @@ int iniciarPrograma(char name[]){
 	// Resolve the server address and port
 	SOCKADDR_IN direccion;
 	int tamano = sizeof(direccion);
-	direccion.sin_addr.s_addr = inet_addr("169.254.249.41"); // ip en donde correra el servidor
+	direccion.sin_addr.s_addr = inet_addr("127.0.0.1"); // ip en donde correra el servidor
 	direccion.sin_port = htons(puerto); // se le pasa el puerto para hacer la direccion
 	direccion.sin_family = AF_INET;
 
@@ -194,7 +196,7 @@ int iniciarPrograma(char name[]){
 		std::string cadena;
 	    char mensaje[100];
 	    char mensaje2[100];
-	    int opct;
+	    int opct=0;
 		// Recv, Read: Recibe mensaje
         recv(NUEVA_CONEXION, mensaje2, sizeof(mensaje2), 0);
         opct = obtenerFuncion(mensaje2);
@@ -211,11 +213,13 @@ int iniciarPrograma(char name[]){
             default:
             break;
         }
-
+        opct=0;
         if(!quit){
-            cadena = pedirCadena(" Server: ");
-            strcpy(mensaje, cadena.c_str());
-            opct = obtenerFuncion(mensaje);
+            while(opct<1 || opct>3){
+                cadena = pedirCadena(" Server: ");
+                strcpy(mensaje, cadena.c_str());
+                opct = obtenerFuncion(mensaje);
+            }
             switch (opct){
                 case 1: // Función M (Mensaje):
                 send(NUEVA_CONEXION, mensaje, sizeof(mensaje), 0);

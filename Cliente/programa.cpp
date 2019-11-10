@@ -49,7 +49,9 @@ void sendData(SOCKET socket, std::string cadena){
     FILE *fp = fopen(cad2, "rb");
     if(fp == NULL){
         perror("File");
-        sendData(socket,cadena);
+        std::cout << "Error no se encontro el archivo. Espere a que le envien un mensaje.\n";
+        char msg[100]="error";
+        sendMessage(socket,msg);
     }else{
         strcpy(mensaje, cadena.c_str());
         send(socket, mensaje, sizeof(mensaje), 0);
@@ -174,11 +176,13 @@ int iniciarPrograma(char name[]){
 	{
 		std::string cadena;
 	    char mensaje[100];
+        int opct = 0;
 
-
-        cadena = pedirCadena(" Cliente: ");
-		strcpy(mensaje, cadena.c_str());
-		int opct = obtenerFuncion(mensaje);
+		while(opct<1 || opct>3){
+		    cadena = pedirCadena(" Cliente: ");
+            strcpy(mensaje, cadena.c_str());
+            opct = obtenerFuncion(mensaje);
+        }
         switch (opct){
             case 1: // Función M (Mensaje):
             send(conexion, mensaje, sizeof(mensaje), 0);
